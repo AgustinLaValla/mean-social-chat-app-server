@@ -44,16 +44,16 @@ const createUser = async (req, res) => {
 const login = async (req, res) => {
     const { email, password } = req.body;
 
-    const schema = Joi.object.keys({
+    const schema = Joi.object().keys({
         email: Joi.string().email().required(),
-        password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
+        password: Joi.string().required()
     });
 
     const { error, value } = schema.validate({email, password});
     if (error) return res.status(HttpStatus.BAD_REQUEST).json({ ok: false, message: error });
 
     const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) return res.status(HttpStatus.NOT_FOUND).json({ ok: false, message: 'Not Found' });
+    if (!user) return res.status(HttpStatus.NOT_FOUND).json({ ok: false, message: 'User Not Found' });
 
     const isValid = await compare(password, user.password);
     if(!isValid) return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({ok:false, message: 'Email or password is wrong'});
