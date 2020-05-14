@@ -3,6 +3,7 @@ const cokieParser = require('cookie-parser');
 const morgan = require('morgan');
 const cors = require('cors');
 const authRoutes = require('./routes/auth.routes');
+const postsRoutes = require('./routes/posts.routes');
 
 const server = express();
 
@@ -18,5 +19,6 @@ server.use(cors());
 
 //routes
 server.use('/api/chatapp/auth',authRoutes);
+server.use('/api/chatapp/posts', postsRoutes);
 
 module.exports = server;

@@ -4,7 +4,7 @@ const HttpStatus = require('http-status-codes');
 const { firstUpper } = require('../helpers/helpers');
 const { genSalt, hash, compare } = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const SEED = require('../config/secret').SEED;
+const { SEED } = require('../config/secret');
 
 const createUser = async (req, res) => {
 
@@ -33,7 +33,8 @@ const createUser = async (req, res) => {
 
     await user.save()
 
-    const token = jwt.sign({username:user.username ,email:user.email}, SEED, { expiresIn: 4 * 60 * 60 * 1000 });
+    const data = {username:user.username ,email:user.email}
+    const token = jwt.sign({user:data}, SEED, { expiresIn: 4 * 60 * 60  });
 
     res.cookie('auth', token);
     return res.status(HttpStatus.CREATED).json({ ok: true, message: 'User Successfully Created', user, token });
@@ -58,7 +59,8 @@ const login = async (req, res) => {
     const isValid = await compare(password, user.password);
     if(!isValid) return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({ok:false, message: 'Email or password is wrong'});
 
-    const token = jwt.sign({username:user.username ,email:user.email}, 'This is A Secret', { expiresIn: 4 * 60 * 60 * 1000 });
+    const data = {username:user.username ,email:user.email}
+    const token = jwt.sign({user:data}, SEED , { expiresIn: 4 * 60 * 60 });
 
     res.cookie('auth', token);
     return res.json({ok:true, token, user});

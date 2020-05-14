@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const dbConfig = require('./config/secret');
+const { DB_URI } = require('./config/secret');
 const colors = require('colors');
 
 async function connect() {
 
-    await mongoose.connect(dbConfig.DB_URI, {
+    await mongoose.connect(DB_URI, {
         useUnifiedTopology: true,
         useCreateIndex: true,
         useNewUrlParser: true
