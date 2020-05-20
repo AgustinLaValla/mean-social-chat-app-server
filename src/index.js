@@ -1,8 +1,8 @@
-const server = require('./server');
+const {server, app }= require('./server');
 const { connect } = require('./db');
 const colors = require('colors');
 
-const port = server.get('port');    
+const port = app.get('port');    
 
 async function main() {
     await connect(); 

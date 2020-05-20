@@ -1,24 +1,30 @@
 const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
 const cokieParser = require('cookie-parser');
-const morgan = require('morgan');
 const cors = require('cors');
 const authRoutes = require('./routes/auth.routes');
 const postsRoutes = require('./routes/posts.routes');
+const { socketStreams } = require('./socket/streams.socket');
 
-const server = express();
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
 //settings
-server.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3000);
 
 //middlewares
-server.use(express.json({limit: '50mb'}));
-server.use(express.urlencoded({extended:true, limit: '50mb'}));
-server.use(cokieParser());
-server.use(morgan('dev'));
-server.use(cors());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({extended:true, limit: '50mb'}));
+app.use(cokieParser());
+app.use(cors());
 
 //routes
-server.use('/api/chatapp/auth',authRoutes);
-server.use('/api/chatapp/posts', postsRoutes);
+app.use('/api/chatapp/auth',authRoutes);
+app.use('/api/chatapp/posts', postsRoutes);
 
-module.exports = server;
+//Socket Streams
+socketStreams(io);
+
+module.exports = { server , app};

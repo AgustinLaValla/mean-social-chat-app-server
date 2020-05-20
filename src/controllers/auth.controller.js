@@ -33,7 +33,7 @@ const createUser = async (req, res) => {
 
     await user.save()
 
-    const data = {username:user.username ,email:user.email}
+    const data = {username:user.username ,email:user.email, _id:user._id}
     const token = jwt.sign({user:data}, SEED, { expiresIn: 4 * 60 * 60  });
 
     res.cookie('auth', token);
@@ -59,7 +59,7 @@ const login = async (req, res) => {
     const isValid = await compare(password, user.password);
     if(!isValid) return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({ok:false, message: 'Email or password is wrong'});
 
-    const data = {username:user.username ,email:user.email}
+    const data = {username:user.username ,email:user.email,  _id:user._id, posts:user.posts}
     const token = jwt.sign({user:data}, SEED , { expiresIn: 4 * 60 * 60 });
 
     res.cookie('auth', token);

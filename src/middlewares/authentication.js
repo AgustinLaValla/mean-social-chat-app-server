@@ -4,12 +4,16 @@ const httpStatus = require('http-status-codes');
 const { SEED } = require('../config/secret');
 
 const verifyToken = async (req, res, next) => {
-    const token = req.cookies.auth;
-    if (!token) return res.status(httpStatus.UNAUTHORIZED).json({ ok: false, message: 'No Token Provided' });
+
+    if(!req.headers.authorization) return res.status(httpStatus.UNAUTHORIZED).json({ ok: false, message: 'No Token Provided' });
+
+    const token = req.cookies.auth || req.get('authorization').split(' ')[1];
+
 
     try {
         const decoded = await jwt.verify(token, SEED);
-        req.user = decoded;
+        req.user = decoded.user;
+
     } catch (error) {
         if (error.expiredAt < new Date())
             return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
