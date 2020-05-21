@@ -5,6 +5,8 @@ const cokieParser = require('cookie-parser');
 const cors = require('cors');
 const authRoutes = require('./routes/auth.routes');
 const postsRoutes = require('./routes/posts.routes');
+const userRoutes = require('./routes/user.routes');
+const friendsRoutes = require('./routes/friends.routes');
 const { socketStreams } = require('./socket/streams.socket');
 
 const app = express();
@@ -23,6 +25,8 @@ app.use(cors());
 //routes
 app.use('/api/chatapp/auth',authRoutes);
 app.use('/api/chatapp/posts', postsRoutes);
+app.use('/api/chatapp/user', userRoutes);
+app.use('/api/chatapp/friends', friendsRoutes);
 
 //Socket Streams
 socketStreams(io);

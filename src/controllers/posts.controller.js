@@ -31,7 +31,7 @@ const addPost = async (req, res) => {
         return res.status(HttpStatus.CREATED).json({ ok: true, message: 'Post Successfully created', post });
 
     } catch (error) {
-
+        console.log(error);
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ ok: false, message: 'An error has occured :(' });
     };
 
@@ -42,6 +42,7 @@ const getAllPost = async (req, res) => {
         const posts = await Post.find({}).populate('user').sort({ created: -1 });
         return res.json({ ok: true, posts });
     } catch (error) {
+        console.log(error);
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ ok: false, message: 'An Error Has Ocurred' });
     };
 };
@@ -54,6 +55,7 @@ const getSinglePost = async (req, res) => {
         return res.json({ ok: true, post });
 
     } catch (error) {
+        console.log(error);
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ ok: false, message: 'An Error Has Ocurred' });
     }
 };
@@ -64,13 +66,14 @@ const addLike = async (req, res) => {
         await Post.updateOne({ _id: postId, 'likes.username': { $ne: req.user.username } }, {
             $push: {
                 likes: {
-                    username: req.body.username,
+                    username: req.user.username,
                 }
             },
             $inc: { totalLikes: 1 }
         });
         return res.json({ ok: true, message: 'You liked the post' });
     } catch (error) {
+        console.log(error);
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ ok: false, message: 'An Error Has Ocurred' });
     };
 };
@@ -91,6 +94,7 @@ const addComment = async (req, res) => {
         return res.json({ ok: true, message: 'Comment Successffully createed' });
 
     } catch (error) {
+        console.log(error)
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ ok: false, message: 'An Error Has Ocurred' });
     }
 };

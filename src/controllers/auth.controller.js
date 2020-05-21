@@ -33,8 +33,8 @@ const createUser = async (req, res) => {
 
     await user.save()
 
-    const data = {username:user.username ,email:user.email, _id:user._id}
-    const token = jwt.sign({user:data}, SEED, { expiresIn: 4 * 60 * 60  });
+    const data = { username: user.username, email: user.email, _id: user._id }
+    const token = jwt.sign({ user: data }, SEED, { expiresIn: 4 * 60 * 60 });
 
     res.cookie('auth', token);
     return res.status(HttpStatus.CREATED).json({ ok: true, message: 'User Successfully Created', user, token });
@@ -43,27 +43,31 @@ const createUser = async (req, res) => {
 
 
 const login = async (req, res) => {
-    const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
 
-    const schema = Joi.object().keys({
-        email: Joi.string().email().required(),
-        password: Joi.string().required()
-    });
+        const schema = Joi.object().keys({
+            email: Joi.string().email().required(),
+            password: Joi.string().required()
+        });
 
-    const { error, value } = schema.validate({email, password});
-    if (error) return res.status(HttpStatus.BAD_REQUEST).json({ ok: false, message: error });
+        const { error, value } = schema.validate({ email, password });
+        if (error) return res.status(HttpStatus.BAD_REQUEST).json({ ok: false, message: error });
 
-    const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) return res.status(HttpStatus.NOT_FOUND).json({ ok: false, message: 'User Not Found' });
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (!user) return res.status(HttpStatus.NOT_FOUND).json({ ok: false, message: 'User Not Found' });
 
-    const isValid = await compare(password, user.password);
-    if(!isValid) return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({ok:false, message: 'Email or password is wrong'});
+        const isValid = await compare(password, user.password);
+        if (!isValid) return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({ ok: false, message: 'Email or password is wrong' });
 
-    const data = {username:user.username ,email:user.email,  _id:user._id, posts:user.posts}
-    const token = jwt.sign({user:data}, SEED , { expiresIn: 4 * 60 * 60 });
+        const data = { username: user.username, email: user.email, _id: user._id, posts: user.posts }
+        const token = jwt.sign({ user: data }, SEED, { expiresIn: 4 * 60 * 60 });
 
-    res.cookie('auth', token);
-    return res.json({ok:true, token, user});
+        res.cookie('auth', token);
+        return res.json({ ok: true, token, user });
+    } catch (error) {
+        console.log(error);
+    };
 }
 
 
