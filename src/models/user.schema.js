@@ -17,6 +17,17 @@ const userSchema = new Schema({
     ],
     followers: [
         { follower: { type:Schema.Types.ObjectId, ref: 'User' } }
+    ],
+    notifications: [
+        {
+            senderId: { type:Schema.Types.ObjectId, ref: 'User' },
+            message: { type:String },
+            viewProfile: { type:Boolean, default:false },
+            created: { type:Date, default: Date.now() },
+            read: { type:Boolean, default:false },
+            date: { type:String, default:'' }
+        },
+
     ]
 }, { timestamps: true });
 
