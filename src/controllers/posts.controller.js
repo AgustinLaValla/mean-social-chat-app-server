@@ -60,6 +60,16 @@ const getSinglePost = async (req, res) => {
     }
 };
 
+const getTopPosts = async (req, res) => {
+    try {
+        const posts = await Post.find().where('totalLikes').gt(2).exec();
+        return res.json({ ok: true, posts });
+    } catch (error) {
+        console.log(error);
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ ok: false, message: 'An Error Has Ocurred' });
+    };
+};
+
 const addLike = async (req, res) => {
     try {
         const postId = req.body._id;
@@ -99,4 +109,4 @@ const addComment = async (req, res) => {
     }
 };
 
-module.exports = { addPost, getAllPost, addLike, addComment, getSinglePost };
+module.exports = { addPost, getAllPost, addLike, addComment, getSinglePost, getTopPosts };

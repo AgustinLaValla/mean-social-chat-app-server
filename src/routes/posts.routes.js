@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { addPost, getAllPost, addLike, addComment, getSinglePost } = require('../controllers/posts.controller');
+const { addPost, getAllPost, addLike, addComment, getSinglePost, getTopPosts } = require('../controllers/posts.controller');
 const { verifyToken } = require('../middlewares/authentication');
 
 const router = Router();
@@ -7,6 +7,8 @@ const router = Router();
 router.get('/', verifyToken, getAllPost);
 
 router.get('/:id', verifyToken, getSinglePost);
+
+router.get('/top/get-all', verifyToken, getTopPosts);
 
 router.post('/add-post', verifyToken ,addPost);
 
