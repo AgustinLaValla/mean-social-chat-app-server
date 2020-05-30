@@ -20,7 +20,9 @@ const getUserById = async (req, res) => {
     const user = await User.findById(id)
                            .populate('post.postId')
                            .populate('following.userFollowed', 'username')
-                           .populate('followers.follower', 'username');
+                           .populate('followers.follower', 'username')
+                           .populate('chatList.receiverId', 'username')
+                           .populate('chatList.msgId');
 
     if(!user) return res.json({ok:false, message:'User Not Found'});
 
@@ -34,7 +36,9 @@ const getUserByUsername = async (req, res) => {
     const user = await User.findOne({username:username})
                            .populate('post.postId')
                            .populate('following.userFollowed', 'name')
-                           .populate('followers.follower', 'name');
+                           .populate('followers.follower', 'name')
+                           .populate('chatList.receiverId', 'username')
+                           .populate('chatList.msgId', 'message.body');
 
     if(!user) return res.json({ok:false, message:'User Not Found'});
 

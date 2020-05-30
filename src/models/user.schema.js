@@ -28,6 +28,13 @@ const userSchema = new Schema({
             date: { type:String, default:'' }
         },
 
+    ],
+    chatList: [
+        {
+            receiverId: { type:Schema.Types.ObjectId, ref: 'User', required:true },
+            msgId: {  type:Schema.Types.ObjectId, ref: 'Message', required:true},
+            
+        }
     ]
 }, { timestamps: true });
 
