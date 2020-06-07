@@ -28,10 +28,11 @@ const socketStreams = (io, User, _) => {
 
         client.on('friend-list-refresh', () => io.emit('friend-list-refresh'));
 
-        client.on('refresh-followed-friend-list', () => io.emit('refresh-followed-friend-list'));
-
         client.on('refresh-chat', () => io.emit('refresh-chat'));
 
+        client.on('refresh-images', () => io.emit('refresh-images'));
+
+        client.on('profile-pic-updated', () => io.emit('friend-list-refresh'));
     });
 };
 

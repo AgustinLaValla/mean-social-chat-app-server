@@ -1,7 +1,11 @@
 const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status-codes');
+const { config } = require('dotenv');
 
-const { SEED } = require('../config/secret');
+config();
+
+const SEED = process.env.SEED;
+
 
 const verifyToken = async (req, res, next) => {
 

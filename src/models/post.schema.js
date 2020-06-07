@@ -3,7 +3,7 @@ const { Schema, model } = require('mongoose');
 const postSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     username: { type:String, required:true, default: '' },
-    post: { type:String, default:'', required:true },
+    post: { type:String, default:'', required:false },
     comments: [
         {
             userId: { type: Schema.Types.ObjectId, ref: 'User' },
@@ -17,7 +17,8 @@ const postSchema = new Schema({
         {
             username:  { type:String, default: '' }
         }
-    ]
+    ],
+    image: { type:String, required:false }
 }, {timestamps:true});
 
 module.exports = model('Post', postSchema);

@@ -8,6 +8,7 @@ const postsRoutes = require('./routes/posts.routes');
 const userRoutes = require('./routes/user.routes');
 const friendsRoutes = require('./routes/friends.routes');
 const messageRoutes = require('./routes/message.routes');
+const imageRoutes = require('./routes/image.routes');
 const { socketStreams } = require('./socket/streams.socket');
 const { socketPrivate } = require('./socket/private.socket');
 
@@ -33,6 +34,7 @@ app.use('/api/chatapp/posts', postsRoutes);
 app.use('/api/chatapp/user', userRoutes);
 app.use('/api/chatapp/friends', friendsRoutes);
 app.use('/api/chatapp/chat-messages', messageRoutes);
+app.use('/api/chatapp/images', imageRoutes);
 
 //Socket Streams
 socketStreams(io, User, _);

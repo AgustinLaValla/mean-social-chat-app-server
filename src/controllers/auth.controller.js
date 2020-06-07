@@ -4,7 +4,11 @@ const HttpStatus = require('http-status-codes');
 const { firstUpper } = require('../helpers/helpers');
 const { genSalt, hash, compare } = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { SEED } = require('../config/secret');
+const { config } = require('dotenv');
+
+config();
+
+const SEED = process.env.SEED;
 
 const createUser = async (req, res) => {
 
@@ -22,7 +26,6 @@ const createUser = async (req, res) => {
     const userEmailExists = await User.findOne({ email: email.toLowerCase() });
     if (userEmailExists) return res.status(HttpStatus.CONFLICT).json({ ok: false, message: 'Email already exists' });
 
-    console.log(firstUpper(username));
     const usernameExists = await User.findOne({ username: firstUpper(username) });
     if (usernameExists) return res.status(HttpStatus.CONFLICT).json({ ok: false, message: 'User already exists' });
 
@@ -34,7 +37,7 @@ const createUser = async (req, res) => {
     await user.save()
 
     const data = { username: user.username, email: user.email, _id: user._id }
-    const token = jwt.sign({ user: data }, SEED, { expiresIn: 4 * 60 * 60 });
+    const token =  jwt.sign({ user: data }, SEED, { expiresIn: 4 * 60 * 60 });
 
     res.cookie('auth', token);
     return res.status(HttpStatus.CREATED).json({ ok: true, message: 'User Successfully Created', user, token });
@@ -60,7 +63,7 @@ const login = async (req, res) => {
         const isValid = await compare(password, user.password);
         if (!isValid) return res.status(HttpStatus.UNPROCESSABLE_ENTITY).json({ ok: false, message: 'Email or password is wrong' });
 
-        const data = { username: user.username, email: user.email, _id: user._id, posts: user.posts }
+        const data = { username: user.username, email: user.email, _id: user._id }
         const token = jwt.sign({ user: data }, SEED, { expiresIn: 4 * 60 * 60 });
 
         res.cookie('auth', token);
