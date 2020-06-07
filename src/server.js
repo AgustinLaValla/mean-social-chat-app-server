@@ -19,8 +19,6 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-//settings
-app.set('port', process.env.PORT || 3000);
 
 //middlewares
 app.use(express.json({limit: '50mb'}));

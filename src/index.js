@@ -2,7 +2,7 @@ const {server, app }= require('./server');
 const { connect } = require('./db');
 const colors = require('colors');
 
-const port = app.get('port');    
+const port = process.env.PORT || 3000;
 
 async function main() {
     await connect(); 
