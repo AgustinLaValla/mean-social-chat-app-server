@@ -6,7 +6,7 @@ const port = app.get('port');
 
 async function main() {
     await connect(); 
-    await server.listen(3000);
+    await server.listen(port);
     console.log(`${colors.magenta('Server on port')} ${colors.green(port)}`);
 };
 
