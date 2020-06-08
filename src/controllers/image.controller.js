@@ -50,4 +50,31 @@ const updateProfilePic = async (req, res) => {
     }
 };
 
-module.exports = { uploadImage, updateProfilePic };
+const deleteImage = async (req, res) =>  { 
+    const { publicId } = req.params;
+    const { image } = req.body;
+    
+    await cloudinary.uploader.destroy(publicId);
+
+    try {
+        await User.updateOne({ _id: req.user._id }, {
+            $pull: {
+                images: {
+                    imgId:image.imgId
+                }
+            },
+        });
+
+        await User.update({_id:req.user._id}, {
+            $set: { picVersion: '1591573111'},
+            $set: { picId: 'avatar_tmoqrv.png' }
+        }).where('picId').equals(image.imgId);
+        
+        return res.json({ ok: true, message: 'Image Successfully deleted' });
+    } catch (error) {
+        console.log(error);
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ ok: false, message: 'Internal Server Error' });
+    };
+};
+
+module.exports = { uploadImage, updateProfilePic, deleteImage };

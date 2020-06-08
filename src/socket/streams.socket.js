@@ -15,12 +15,20 @@ const socketStreams = (io, User, _) => {
 
         client.on('disconnect', () => {
             currentUser = user.removeUser(client.id);
-            console.log({ currentUser });
             if (currentUser) {
                 const usersArray = _.uniq(user.getUsersName(currentUser.room));
                 io.emit('usersOnline', usersArray);
             };
         });
+
+        client.on('logout', () => {
+            currentUser = user.removeUser(client.id);
+            if (currentUser) {
+                console.log(currentUser);
+                const usersArray = _.uniq(user.getUsersName(currentUser.room));
+                io.emit('usersOnline', usersArray);
+            };
+        })
 
         client.on('refresh-posts', (payload) => io.emit('refresh-posts', { data: 'post-refresh-response' }))
 
