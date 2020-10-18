@@ -4,7 +4,6 @@ const HttpStatus = require('http-status-codes');
 const User = require('../models/user.schema');
 const cloudinary = require('cloudinary').v2
 const moment = require('moment');
-const request = require('request');
 
 const addPost = async (req, res) => {
 
@@ -49,18 +48,10 @@ const addPost = async (req, res) => {
 
 const getAllPost = async (req, res) => {
     try {
-        const posts = await Post.find({}).populate('user').sort({ createdAt: -1 });
-
-        const user = await User.findById(req.user._id);
-        if (user) {
-            request({ url: 'https://geolocation-db.com/json', json: true }, async (err, res, body) => {
-                user.city = body.city;
-                user.country = body.country_name
-                await user.save();
-            });
-        };
-
-        return res.json({ ok: true, posts });
+        const limit = parseInt(req.query.limit);
+        const posts = await Post.find({}).populate('user').sort({ createdAt: -1 }).limit(limit);
+        const total = await Post.estimatedDocumentCount();
+        return res.json({ ok: true, posts, total });
     } catch (error) {
         console.log(error);
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ ok: false, message: 'An Error Has Ocurred' });
@@ -70,7 +61,7 @@ const getAllPost = async (req, res) => {
 const getSinglePost = async (req, res) => {
     const { id } = req.params;
     try {
-        const post = await Post.findById(id).populate('user', 'username').populate('comments.userId', 'username');
+        const post = await Post.findById(id).populate('user', 'username').populate('comments.userId', 'username picId picVersion img google');
 
         return res.json({ ok: true, post });
 
@@ -83,12 +74,21 @@ const getSinglePost = async (req, res) => {
 const getTopPosts = async (req, res) => {
     const today = moment().startOf('day');
     const tomorow = moment(today).add(1, 'days');
+    const limit = parseInt(req.query.limit);
     try {
         const posts = await Post.find().and([
             { totalLikes: { $gt: 2 } },
             { createdAt: { $gt: today.toDate(), $lt: tomorow.toDate() } }
-        ]).populate('user').exec();
-        return res.json({ ok: true, posts });
+        ]).populate('user').limit(limit).exec();
+
+        const total = await Post.countDocuments({
+            $and: [
+                { totalLikes: { $gt: 2 } },
+                { createdAt: { $gt: today.toDate(), $lt: tomorow.toDate() } }
+            ]
+        });
+
+        return res.json({ ok: true, posts, total });
     } catch (error) {
         console.log(error);
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ ok: false, message: 'An Error Has Ocurred' });
@@ -142,7 +142,7 @@ const editPost = async (req, res) => {
 
         await Post.findByIdAndUpdate(id, { post });
 
-        return res.json({ ok: true, message: 'Post successfully deleted' });
+        return res.json({ ok: true, message: 'Post successfully edited' });
 
     } catch (error) {
         console.log(error);
@@ -164,7 +164,7 @@ const deletePost = async (req, res) => {
             }
         });
 
-        return res.json({ok:true, message:'Post Successfully deleted!'});
+        return res.json({ ok: true, message: 'Post Successfully deleted!' });
     } catch (error) {
         console.log(error);
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ ok: false, message: 'An Error Has Ocurred' });

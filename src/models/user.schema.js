@@ -4,7 +4,8 @@ const userSchema = new Schema({
     username: { type: String, required: [true, 'Username is required'] },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-
+    google: { type: Boolean, default: false },
+    img: {type:String, default:null},
     posts: [
         {
             postId: { type: Schema.Types.ObjectId, ref: 'Post' },
@@ -44,8 +45,8 @@ const userSchema = new Schema({
             imgVersion: { type: String, default: '' }
         }
     ],
-    city: { type:String, default:'' },
-    country: { type:String, default: '' }
+    city: { type: String, default: '' },
+    country: { type: String, default: '' }
 }, { timestamps: true });
 
 module.exports = model('User', userSchema);

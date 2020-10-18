@@ -7,6 +7,7 @@ const { updateChatList } = require('../helpers/helpers');
 const getAllMessages = async (req, res) => {
 
     const { senderId, receiverId } = req.params;
+    const limit = parseInt(req.query.limit) * - 1;
 
     const conversationId = await Conversation.findOne().or([
         {
@@ -24,9 +25,16 @@ const getAllMessages = async (req, res) => {
     ]).select('_id')
 
     if (conversationId) {
-        const messages = await Message.find({ conversationId: conversationId._id });
-        return res.json({ ok: true, messages });
+        const messages = await Message.find({ conversationId: conversationId._id }, {
+            message: { $slice: limit }
+        });
+
+        const msg = await Message.findOne({ conversationId });
+        const total = msg.message.length;
+
+        return res.json({ ok: true, messages, total });
     };
+
 
 };
 
@@ -63,7 +71,7 @@ const sendMessage = async (req, res) => {
             conversation = await Conversation.create({
                 participants: [{ senderId, receiverId }]
             });
-            console.log(conversation);
+
 
             const newMessage = await Message.create({
                 conversationId: conversation._id,
@@ -150,7 +158,7 @@ const markAllMessages = async (req, res) => {
 
         if (userMessages.length > 0) {
             userMessages.forEach(async (message) =>
-                await Message.updateOne({'message._id': message.message._id }, { $set: { 'message.$.isRead': true } }));
+                await Message.updateOne({ 'message._id': message.message._id }, { $set: { 'message.$.isRead': true } }));
         };
 
         return res.json({ ok: true, message: 'All Messages Successfully Updated' });

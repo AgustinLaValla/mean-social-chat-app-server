@@ -30,7 +30,7 @@ const socketStreams = (io, User, _) => {
             };
         })
 
-        client.on('refresh-posts', (payload) => io.emit('refresh-posts', { data: 'post-refresh-response' }))
+        client.on('refresh-posts', ({newPostAdded}) => io.emit('refresh-posts', { newPostAdded }))
 
         client.on('refresh-posts-comments', () => io.emit('refresh-posts-comments'));
 
