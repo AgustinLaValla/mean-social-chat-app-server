@@ -22,7 +22,7 @@ const socketStreams = (io, User, _) => {
         });
 
         client.on('logout', () => {
-            currentUser = user.removeUser(client.id);
+            const currentUser = user.removeUser(client.id);
             if (currentUser) {
                 console.log(currentUser);
                 const usersArray = _.uniq(user.getUsersName(currentUser.room));

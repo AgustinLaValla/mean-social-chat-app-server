@@ -66,8 +66,8 @@ const deleteImage = async (req, res) =>  {
         });
 
         await User.update({_id:req.user._id}, {
-            $set: { picVersion: '1591573111'},
-            $set: { picId: 'avatar_tmoqrv.png' }
+            $set: { picVersion: '1603135767'},
+            $set: { picId: 'avatar_pic_a9d3ug.png' }
         }).where('picId').equals(image.imgId);
         
         return res.json({ ok: true, message: 'Image Successfully deleted' });

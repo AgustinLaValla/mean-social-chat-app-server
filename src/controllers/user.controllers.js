@@ -23,7 +23,7 @@ const getUsers = async (req, res) => {
 
 const getUserById = async (req, res) => {
     const { id } = req.params;
-    const limit = parseInt(req.query.limit);
+    const limit = parseInt(req.query.limit) * -1;
     try {
         const user = await User.findOne({_id: id}, {
             posts: { $slice:  limit}

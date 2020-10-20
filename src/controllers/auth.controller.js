@@ -20,7 +20,7 @@ const createUser = async (req, res) => {
     const { username, email, password } = req.body;
 
     const schema = Joi.object().keys({
-        username: Joi.string().min(5).max(20).required(),
+        username: Joi.string().min(3).max(20).required(),
         email: Joi.string().email().required(),
         password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$'))
     });
@@ -121,7 +121,7 @@ const googleLogin = async (req, res) => {
             const data = { username: newUser.username, email: newUser.email, _id: newUser._id, google: newUser.google };
             const token = jwt.sign({ user: data }, SEED, { expiresIn: '4h' });
 
-            return res.json({ ok: true, user, token });
+            return res.json({ ok: true, user: data, token });
 
         }
     } catch (error) {

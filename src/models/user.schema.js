@@ -37,8 +37,8 @@ const userSchema = new Schema({
 
         }
     ],
-    picVersion: { type: String, default: '1591573111' },
-    picId: { type: String, default: 'avatar_tmoqrv.png' },
+    picVersion: { type: String, default: '1603135767' },
+    picId: { type: String, default: 'avatar_pic_a9d3ug.png' },
     images: [
         {
             imgId: { type: String, default: '' },
